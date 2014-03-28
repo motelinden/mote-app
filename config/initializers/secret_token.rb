@@ -9,4 +9,19 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-MoteApp::Application.config.secret_key_base = '9cc1fb7054d19427ae2a60fcdb8440f03931f816084512927514b7d71f504eb0c7b9f8a0fc98f8430801a3bbbc7ad1caa209c9b80b830b9c9cb0d41c159fd4a2'
+require 'securerandom'
+
+def secure_token
+  token_file = Rails.root.join('.secret')
+  if File.exist?(token_file)
+    # Use the existing token.
+    File.read(token_file).chomp
+  else
+    # Generate a new token and store it in token_file.
+    token = SecureRandom.hex(64)
+    File.write(token_file, token)
+    token
+  end
+end
+
+SampleApp::Application.config.secret_key_base = secure_token
