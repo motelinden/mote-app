@@ -46,6 +46,8 @@ gem 'sprockets', '2.11.0'
 
 gem 'rails_12factor'
 
+gem 'bcrypt-ruby'
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc','0.3.20', require: false
