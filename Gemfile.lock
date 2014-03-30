@@ -28,8 +28,6 @@ GEM
     arel (4.0.2)
     atomic (1.1.16)
     bcrypt (3.1.7-x86-mingw32)
-    bcrypt-ruby (3.1.5-x86-mingw32)
-      bcrypt (>= 3.1.3)
     bootstrap-sass (2.3.2.0)
       sass (~> 3.2)
     builder (3.1.4)
@@ -163,7 +161,7 @@ PLATFORMS
   x86-mingw32
 
 DEPENDENCIES
-  bcrypt-ruby
+  bcrypt
   bootstrap-sass (= 2.3.2.0)
   capybara (= 2.1.0)
   coffee-rails (= 4.0.1)
