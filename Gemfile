@@ -49,6 +49,12 @@ gem 'rails_12factor'
 
 gem 'bcrypt'
 
+gem 'faker','1.1.2'
+
+gem 'will_paginate','3.0.4'
+
+gem 'bootstrap-will_paginate','0.0.9'
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc','0.3.20', require: false

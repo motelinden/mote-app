@@ -24,16 +24,70 @@ describe "AuthenticationPages" do
 
 		describe "with valid information" do
       let(:user) { FactoryGirl.create(:user) }
-      before do
-        fill_in "Email",    with: user.email.upcase
-        fill_in "Password", with: user.password
-        click_button "Sign In"
-      end
+			before {sign_in user}
 
       it { should have_title(user.name) }
+			it { should have_link('Users',       href: users_path) }
       it { should have_link('Profile',     href: user_path(user)) }
       it { should have_link('Sign Out',    href: signout_path) }
+			it { should have_link('Settings',    href: edit_user_path(user)) }
       it { should_not have_link('Sign In', href: signin_path) }
+    end
+	end
+
+	describe 'authorization' do
+
+		describe 'when the user is non-signed' do
+			let(:user) {FactoryGirl.create(:user)}
+			let(:non_admin) {FactoryGirl.create(:user)}
+
+			describe 'visiting the edit page' do
+				before {visit edit_user_path(user)}
+				it {should have_title('Sign In')}
+
+				describe 'friendly redirect' do
+					before {sign_in user}
+
+					it {should have_title('Edit User')}
+				end
+
+				describe "when try to delete another user" do
+					before do
+						sign_in non_admin,no_capybara: true
+						delete user_path(user)
+					end
+
+					specify { expect(response).to redirect_to(root_path) }
+				end
+			end
+
+			describe 'submitting to the update action' do
+				before {patch user_path(user)}
+				specify {expect(response).to redirect_to(signin_path)}
+			end
+
+			describe 'when visit the Users page' do
+				before {visit users_path}
+
+				it {should have_title('Sign In')}
+			end
+		end
+
+		describe "when the user has signed in but try to edit ather's account" do
+      let(:user) { FactoryGirl.create(:user) }
+      let(:ather_user) { FactoryGirl.create(:user, email: "ather@example.com") }
+      before { sign_in user, no_capybara: true }
+
+			describe "when try to get the edit page" do
+        before { get edit_user_path(ather_user) }
+        specify { expect(response.body).not_to match(full_title('Edit user')) }
+        specify { expect(response).to redirect_to(root_url) }
+      end
+
+			describe "when try to invoke the update action" do
+        before { patch user_path(ather_user) }
+        specify { expect(response).to redirect_to(root_url) }
+      end
     end
 	end
 end
