@@ -10,22 +10,41 @@ describe "Static pages" do
 	end
 
   describe "Home page" do
-    before { visit root_path }
 		let(:h1) {'Mote App'}
 		let(:title) {''}
 
-		it_should_behave_like 'title and head'
-		it { should_not have_title('| Home')}
+		describe 'for non-signed-users'do
+			before {visit root_path}
+
+			it_should_behave_like 'title and head'
+			it { should_not have_title('| Home')}
 		
-		it 'should have the right links' do
-			click_link 'About'
-			expect(page).to have_title(full_title('About Us'))
+			it 'should have the right links' do
+				click_link 'About'
+				expect(page).to have_title(full_title('About Us'))
 
-			click_link 'Contact'
-			expect(page).to have_title(full_title('Contact Us'))
+				click_link 'Contact'
+				expect(page).to have_title(full_title('Contact Us'))
 
-			click_link 'Help'
-			expect(page).to have_title(full_title('Help'))
+				click_link 'Help'
+				expect(page).to have_title(full_title('Help'))
+			end
+		end
+
+		describe 'for signed-in users' do
+			let(:user) { FactoryGirl.create(:user) }
+			before do
+				FactoryGirl.create(:micropost, user: user, content: "Lorem ipsum")
+        FactoryGirl.create(:micropost, user: user, content: "Dolor sit amet")
+        sign_in user
+        visit root_path
+      end
+
+			it "should render the user's feed" do
+				user.feed.each do |item|
+          expect(page).to have_selector("li##{item.id}", text: item.content)
+        end
+			end
 		end
   end
 

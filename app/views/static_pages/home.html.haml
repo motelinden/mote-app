@@ -1,5 +1,14 @@
-.center
-  %h1 Wlecom to the Mote App
-  %h2 
-    This is the home page for the Mote App
-  = link_to 'Sign up now!', signup_path,class: 'btn btn-large btn-primary'
+- if signed_in?
+  .row
+    %aside.span4
+      %section= render 'shared/user_info'
+      %section= render 'shared/micropost_form'
+    .span8
+      %h3 Micropost Feed
+      = render 'shared/feed'
+- else
+  .center
+    %h1 Wlecom to the Mote App
+    %h2 
+      This is the home page for the Mote App
+    = link_to 'Sign up now!', signup_path,class: 'btn btn-large btn-primary'

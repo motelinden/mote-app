@@ -41,7 +41,7 @@ describe "AuthenticationPages" do
 			let(:user) {FactoryGirl.create(:user)}
 			let(:non_admin) {FactoryGirl.create(:user)}
 
-			describe 'visiting the edit page' do
+			describe 'when try to visit edit page' do
 				before {visit edit_user_path(user)}
 				it {should have_title('Sign In')}
 
@@ -50,15 +50,15 @@ describe "AuthenticationPages" do
 
 					it {should have_title('Edit User')}
 				end
+			end
 
-				describe "when try to delete another user" do
-					before do
-						sign_in non_admin,no_capybara: true
-						delete user_path(user)
-					end
-
-					specify { expect(response).to redirect_to(root_path) }
+			describe "when try to delete another user" do
+				before do
+					sign_in non_admin,no_capybara: true
+					delete user_path(user)
 				end
+
+				specify { expect(response).to redirect_to(root_path) }
 			end
 
 			describe 'submitting to the update action' do
@@ -70,6 +70,18 @@ describe "AuthenticationPages" do
 				before {visit users_path}
 
 				it {should have_title('Sign In')}
+			end
+
+			describe 'about microposts' do
+				describe "try to patch a post request to microposts" do
+          before { post microposts_path }
+          specify { expect(response).to redirect_to(signin_path) }
+        end
+
+        describe "try to the destroy a micropost" do
+          before { delete micropost_path(FactoryGirl.create(:micropost)) }
+          specify { expect(response).to redirect_to(signin_path) }
+        end
 			end
 		end
 
