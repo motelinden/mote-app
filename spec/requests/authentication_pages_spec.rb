@@ -32,6 +32,11 @@ describe "AuthenticationPages" do
       it { should have_link('Sign Out',    href: signout_path) }
 			it { should have_link('Settings',    href: edit_user_path(user)) }
       it { should_not have_link('Sign In', href: signin_path) }
+
+			describe 'followed by signout' do
+				before {click_link 'Sign Out'}
+				it {should have_link('Sign In')}
+			end
     end
 	end
 
@@ -83,6 +88,26 @@ describe "AuthenticationPages" do
           specify { expect(response).to redirect_to(signin_path) }
         end
 			end
+
+			describe 'visiting the followings page' do
+				before {visit followings_user_path(user)}
+				it {should have_title('Sign In')}
+			end
+
+			describe 'visiting the followers page' do
+				before {visit followers_user_path(user)}
+				it {should have_title('Sign In')}
+			end
+
+      describe "submitting to the create action" do
+        before { post relationships_path }
+        specify { expect(response).to redirect_to(signin_path) }
+      end
+
+      describe "submitting to the destroy action" do
+        before { delete relationship_path(1) }
+        specify { expect(response).to redirect_to(signin_path) }
+      end
 		end
 
 		describe "when the user has signed in but try to edit ather's account" do
